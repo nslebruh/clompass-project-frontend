@@ -2,10 +2,10 @@ import React from "react";
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
 import { Navbar, Nav, Form, Button, Offcanvas, Image, Row, Col, Spinner, } from 'react-bootstrap';
-import { LinkContainer } from "react-router-bootstrap";
+import LinkContainer from "react-router-bootstrap";
 import "./scss/app.scss"
 import ICalParser from 'ical-js-parser';
-import {io} from "socket.io-client"
+import io from "socket.io-client"
 
 import PageNotFound from "./components/page_not_found.js"
 //import LearningTasks from "./components/learning_tasks.js";
@@ -22,11 +22,51 @@ import Settings from "./components/settings.js"
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        if (localStorage.getItem('clompass-data') === null) {   
-            localStorage.setItem('clompass-data', '{"learning_tasks":{},"student_info":{},"schedule_url":"","subjects":{},"schedule_data":{}}')
-        } else if (localStorage.getItem('clompass-data') === '{"learning_tasks":[],"student_info":{},"schedule_url":"subjects":[]}') {
-            localStorage.setItem('clompass-data', '{"learning_tasks":{},"student_info":{},"schedule_url":"","subjects":{},"schedule_data":{}"}')
+        this.data;
+        this.schedule_url = ""
+        this.learning_tasks = {}
+        this.schedule_data = {}
+        this.student_info = {chronicles:{}}
+
+        try {
+            this.data = localStorage.getItem("clompass-data")
+            if (this.data !== null) {
+                try {
+                    this.data = JSON.parse(data)
+                } catch (e) {
+                    console.log(e)
+                    let clompassData = {
+                        timestamp: new Date(),
+                        schedule_url: "",
+                        schedule_data: {},
+                        learning_tasks: {},
+                        subjects: {},
+                        student_info: {
+                            chronicles: {}
+                        },
+                    }
+                    localStorage.clear()
+                    localStorage.setItem("clompass-data", JSON.stringify(clompassData))
+                } 
+                if (!data.timestamp || new Date(data.timestamp).valueOf() <= 1651017600000) {
+                    let clompassData = {
+                        timestamp: new Date(),
+                        schedule_url: "",
+                        schedule_data: {},
+                        learning_tasks: {},
+                        subjects: {},
+                        student_info: {
+                            chronicles: {}
+                        },
+                    }
+                    localStorage.clear()
+                    localStorage.setItem("clompass-data", JSON.stringify(clompassData))
+                }
+            }
+        } catch (error) {
+            console.log(error)
         }
+        console.log(this.data)
         this.state = {
             fetching_api_data: false,
             api_message: [],
@@ -38,18 +78,19 @@ export default class App extends React.Component {
             update_data_page: false,
             get_type: "learningtasks",
             data: {
-                schedule_data: JSON.parse(localStorage.getItem('clompass-data')).schedule_data !== {} ? JSON.parse(localStorage.getItem('clompass-data')).schedule_data : {},
-                student_info: JSON.parse(localStorage.getItem('clompass-data')).student_info !== {} ? JSON.parse(localStorage.getItem('clompass-data')).student_info : {},
-                learning_tasks: JSON.parse(localStorage.getItem('clompass-data')).learning_tasks !== {} ? JSON.parse(localStorage.getItem('clompass-data')).learning_tasks : {},
-                schedule_url: JSON.parse(localStorage.getItem('clompass-data')).schedule_url !== "" ? JSON.parse(localStorage.getItem('clompass-data')).schedule_url : '',
-                subjects: JSON.parse(localStorage.getItem('clompass-data')).subjects !== {} ? JSON.parse(localStorage.getItem('clompass-data')).subjects : {},
+                schedule_url: this.schedule_url,
+                schedule_data: this.schedule_data,
+                learning_tasks: this.learning_tasks,
+                subjects: this.subjects,
+                student_info: this.student_info,
+
             },
             settings: {},
             
         };
 
-        //this.ws = io("https://api.clompass.com/get", {transports: ["websocket"]})
-        this.ws = io("http://localhost:3001/get", {transports: ["websocket"]})
+        this.ws = io("https://api.clompass.com/get", {transports: ["websocket"]})
+        //this.ws = io("http://localhost:3001/get", {transports: ["websocket"]}) // connect to development server 
         this.subjects = this.state.data.subjects !== {} ? Object.keys(this.state.data.subjects) : null
         this.years = ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"]
     }
