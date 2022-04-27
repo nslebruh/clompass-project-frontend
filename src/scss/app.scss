@@ -1,0 +1,14 @@
+
+$offcanvas-horizontal-width:        600px;
+
+::-webkit-scrollbar {
+    display: none;
+  }
+.right-allign {
+  text-align: right
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+  @import "/node_modules/bootstrap/scss/bootstrap.scss";
