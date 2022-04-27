@@ -27,6 +27,7 @@ export default class App extends React.Component {
         this.learning_tasks = {}
         this.schedule_data = {}
         this.student_info = {chronicles:{}}
+        this.subjects = {};
 
         try {
             this.data = localStorage.getItem("clompass-data")
@@ -91,7 +92,6 @@ export default class App extends React.Component {
 
         this.ws = io("https://api.clompass.com/get", {transports: ["websocket"]})
         //this.ws = io("http://localhost:3001/get", {transports: ["websocket"]}) // connect to development server 
-        this.subjects = this.state.data.subjects !== {} ? Object.keys(this.state.data.subjects) : null
         this.years = ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"]
     }
     handleSingleStateChange = (key, value) => {
