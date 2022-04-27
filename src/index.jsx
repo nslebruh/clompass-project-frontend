@@ -2,10 +2,10 @@ import React from "react";
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
 import { Navbar, Nav, Form, Button, Offcanvas, Image, Row, Col, Spinner, } from 'react-bootstrap';
-import LinkContainer from "react-router-bootstrap";
+import {LinkContainer} from "react-router-bootstrap";
 import "./scss/app.scss"
 import ICalParser from 'ical-js-parser';
-import io from "socket.io-client"
+import {io} from "socket.io-client"
 
 import PageNotFound from "./components/page_not_found.js"
 //import LearningTasks from "./components/learning_tasks.js";
