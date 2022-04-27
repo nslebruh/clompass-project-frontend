@@ -22,7 +22,7 @@ import Settings from "./components/settings.js"
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.data;
+        this.data = {};
         this.schedule_url = ""
         this.learning_tasks = {}
         this.schedule_data = {}
@@ -32,7 +32,7 @@ export default class App extends React.Component {
             this.data = localStorage.getItem("clompass-data")
             if (this.data !== null) {
                 try {
-                    this.data = JSON.parse(data)
+                    this.data = JSON.parse(this.data)
                 } catch (e) {
                     console.log(e)
                     let clompassData = {
@@ -48,7 +48,7 @@ export default class App extends React.Component {
                     localStorage.clear()
                     localStorage.setItem("clompass-data", JSON.stringify(clompassData))
                 } 
-                if (!data.timestamp || new Date(data.timestamp).valueOf() <= 1651017600000) {
+                if (!this.data.timestamp || new Date(this.data.timestamp).valueOf() <= 1651017600000) {
                     let clompassData = {
                         timestamp: new Date(),
                         schedule_url: "",
