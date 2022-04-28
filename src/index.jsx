@@ -312,16 +312,6 @@ export default class App extends React.Component {
                             <br/>
                             {this.state.fetching_api_data ? <Button disabled><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/></Button> : <Button type="button" onClick={() => this.sendEmit(this.state.get_type, this.state.username, this.state.password, this.state.year, this.state.month)}>Get data</Button>}
                         </Form>
-                        {this.subjects === null 
-                            ?   "no subject data" 
-                            :   <Form>
-                                    <Form.Label>Choose subject</Form.Label>
-                                    {this.subjects.map((subject, index) => (
-                                        <Button key={index} type="button" onClick={() => this.setState({lesson_plan_subject: subject})}>{subject}</Button>
-                                    ))}
-                                    <Button type="button" onClick={() => this.sendLessonPlans(this.state.subject)}></Button>
-                                </Form>
-                            }
                         {this.state.api_message.map((message, index) => (
                             <p key={index}>
                                 {message.timestamp}: {message.status_code} - {message.message}
