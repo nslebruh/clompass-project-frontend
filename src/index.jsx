@@ -23,12 +23,6 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.data = {};
-        this.schedule_url = ""
-        this.learning_tasks = {}
-        this.schedule_data = {}
-        this.student_info = {chronicles:{}}
-        this.subjects = {};
-
         try {
             this.data = localStorage.getItem("clompass-data")
             if (this.data !== null) {
@@ -68,6 +62,11 @@ export default class App extends React.Component {
             console.log(error)
         }
         console.log(this.data)
+        this.schedule_url = this.data.schedule_url
+        this.learning_tasks = this.data.learning_tasks
+        this.schedule_data = this.data.schedule_data
+        this.student_info = this.data.student_info
+        this.subjects = this.data.subjects
         this.state = {
             fetching_api_data: false,
             api_message: [],
@@ -87,17 +86,14 @@ export default class App extends React.Component {
 
             },
             settings: {},
-            
         };
+        this.handleSingleStateChange = (key, value) => {
+            this.setState({[key]: value})
+        }
 
         this.ws = io("https://api.clompass.com/get", {transports: ["websocket"]})
         //this.ws = io("http://localhost:3001/get", {transports: ["websocket"]}) // connect to development server 
         this.years = ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"]
-    }
-    handleSingleStateChange = (key, value) => {
-        this.setState({
-            [key]: value
-        })
     }
     async componentDidMount() {
         console.log("component mounted")
@@ -229,7 +225,9 @@ export default class App extends React.Component {
         )
     }      
     saveData() {
-        let data = {};
+        let data = {
+            timestamp: new Date().valueOf(),
+        };
         Object.keys(this.state.data).forEach(key => {
             data[key] = this.state.data[key]
         })
