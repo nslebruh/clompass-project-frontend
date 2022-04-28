@@ -226,7 +226,7 @@ export default class App extends React.Component {
     }      
     saveData() {
         let data = {
-            timestamp: new Date().valueOf(),
+            timestamp: new Date(),
         };
         Object.keys(this.state.data).forEach(key => {
             data[key] = this.state.data[key]
