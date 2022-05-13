@@ -4,6 +4,7 @@ import {
     getLocalStorageData,
     saveLocalStorageData,
     fetchSchedule,
+    appendData,
 } from "../../functions"
 import Scheduler, { Resource } from 'devextreme-react/scheduler';
 import { Button } from 'react-bootstrap';
@@ -50,10 +51,11 @@ export default class Schedule extends React.Component {
             data: [],
             data_store: {
                 new: {},
-                saved: {},
+                saved: this.schedule_data,
             },
             update_data_page: false,
             schedule_url: this.schedule_url,
+            new_url: false,
         }
         this.views = this.props.onlyDayView === "true" ? ["day"] : ["day", "week", "month"] 
 
@@ -70,39 +72,20 @@ export default class Schedule extends React.Component {
         this.setState({schedule_url: value})
     }
     async componentDidMount () {
-        let data = {}
-        let keys1 = {}
-        let keys2 =  {}
-        let d;
-        let y;
-        let x = []
+        let new_data;
         console.log("schedule component mounted")
-        if (this.schedule_url !== "") {
-            d = await fetchSchedule(this.schedule_url)
-            if (d.length !== 0) {
-                keys1 = Object.keys(d)
-                keys1.forEach(element => {
-                    data[element] = d[element]
-                });
-            }
+        if (this.state.schedule_url !== "") {
+            new_data = await fetchSchedule(this.state.schedule_url)
         }
-        if (this.schedule_data.length !== 0) {
-            keys2 = Object.keys(this.schedule_data)
-            keys2.forEach(element => {
-                data[element] = this.schedule_data[element]
-            })
-        }
-        y = Object.keys(data)
-        y.forEach(element => {
-            x.push(data[element])
-        })
+        let x = appendData(new_data, this.state.data_store.saved)
         this.setState({
             data: x,
             data_store: {
-                new: {...d},
-                saved: {...this.schedule_data}
+                new: {...new_data},
+                saved: this.state.data_store.saved
             }
         })
+
     }
     componentWillUnmount () {
         console.log("schedule component unmounting")
@@ -116,6 +99,7 @@ export default class Schedule extends React.Component {
                     ?   <React.Fragment>
                             <UpdateDataPage state={this.state.update_data_page} setOldData={this.handleOldData} setUrl={this.handleUrl} setDataPage={this.handleDataPage} ws={this.ws} type="schedule" />
                             <Button type="button" onClick={() => this.setState({update_data_page: true})}>Update Data</Button>
+                            {this.state.schedule_url.length !== 0 ?<span>Add this calender to your own calender: {this.state.schedule_url}</span> : null}
                         </React.Fragment>
                     : null
                 }

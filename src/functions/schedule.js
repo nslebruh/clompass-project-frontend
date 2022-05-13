@@ -39,4 +39,28 @@ const fetchSchedule = async (url) => {
     }
     return d
 }
-export {parseTime, fetchSchedule}
+const appendData = (dataset1, dataset2) => {
+  let data = {}
+  let keys1 = {}
+  let keys2 =  {}
+  let y;
+  let x = []
+  if (dataset1.length !== 0) {
+    keys1 = Object.keys(dataset1)
+    keys1.forEach(element => {
+        data[element] = dataset1[element]
+    });
+  }
+  if (dataset2.length !== 0) {
+    keys2 = Object.keys(dataset2)
+    keys2.forEach(element => {
+        data[element] = dataset2[element]
+    })
+  }
+  y = Object.keys(data)
+  y.forEach(element => {
+    x.push(data[element])
+  })
+  return x
+}
+export {parseTime, fetchSchedule, appendData}

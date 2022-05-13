@@ -17,7 +17,6 @@ import {
     Subjects, 
     StudentInfo, 
     Settings,
-    UpdateDataPage
 } from "./components";
 import { validateLocalStorageData } from "./functions"
 import "./scss/app.scss"
