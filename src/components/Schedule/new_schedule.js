@@ -55,7 +55,6 @@ export default class Schedule extends React.Component {
             },
             update_data_page: false,
             schedule_url: this.schedule_url,
-            new_url: false,
         }
         this.views = this.props.onlyDayView === "true" ? ["day"] : ["day", "week", "month"] 
 
