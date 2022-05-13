@@ -1,0 +1,1 @@
+export { UpdateDataPage } from "./updateData.js"

@@ -1,6 +1,6 @@
 import React from "react"; 
 
-export default class Error extends React.Component {
+export default class ErrorPage extends React.Component {
     clearStorage = () => {
         localStorage.clear()
     }

@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap"
 
 import Chronicles from "./chronicles";
-export default class Home extends React.Component {
+export default class StudentInfo extends React.Component {
     constructor(props) {
         super(props);
         this.data = this.props.data;

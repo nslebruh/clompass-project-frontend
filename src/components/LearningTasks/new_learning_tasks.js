@@ -1,127 +1,86 @@
 import React from 'react';
 import {Offcanvas, Image, ListGroup, DropdownButton, Dropdown, Button, Stack, Container} from 'react-bootstrap';
 import Parse from 'html-react-parser';
-
+import { UpdateDataPage } from '../updateData';
+import { validateLocalStorageData, getLocalStorageData } from '../../functions';
+const RenderLearningTasksAmount = (props) => {
+    return (
+        <React.Fragment>
+            <Container>
+                {`You currently have ${props.overdue} overdue learning tasks`}
+                <br/>
+                {`You currently have ${props.late} late learning tasks`}
+                <br/>
+                {`You currently have ${props.pending} pending learning tasks`}
+                <br/>
+                {`You currently have ${props.on_time} on time learning tasks`}
+                <br/>
+            </Container>
+        </React.Fragment>
+    )
+}
 export default class LearningTasks extends React.Component {
     constructor(props) {
         super(props);
-        this.data = [];
-        this.statuses = ["Pending", "On time", "Recieved late", "Overdue"]
-        this.task_types = ["cat ", "pt", "hw", "sac"]
-        this.date_options = {weekday: "long", year: 'numeric', month: 'long', day: 'numeric', hour: "numeric", minute: "2-digit"}
-        this.classes = {all: "all"}
+        this.status_amounts = {
+            overdue: 0,
+            on_time: 0,
+            late: 0,
+            pending: 0
+        }
+        this.learning_tasks = getLocalStorageData("learning_tasks")
+        //this.statuses = ["Pending", "On time", "Recieved late", "Overdue"]
+        //this.task_types = ["cat ", "pt", "hw", "sac"]
+        //this.date_options = {weekday: "long", year: 'numeric', month: 'long', day: 'numeric', hour: "numeric", minute: "2-digit"}
+        //this.classes = {all: "all"}
         this.renderType = props.renderType;
         this.current_year = new Date().toLocaleDateString("en-AU", {year: 'numeric'})
-        this.keys = Object.keys(props.data)
-        for (var l = 0; l < this.keys.length; l++) {
-            this.data.push(props.data[this.keys[l]])
-        }
-        for (l = 0; l < this.keys.length; l++) {
-            if (props.data[this.keys[l]].year in Object.keys(this.classes) === false) {
-                this.classes[props.data[this.keys[l]].year] = []
-            }
-        }
-        for (l = 0; l < this.keys.length; l++) {
-            if (this.classes[props.data[this.keys[l]].year].includes(props.data[this.keys[l]].subject_code) === false) {
-                this.classes[props.data[this.keys[l]].year].push(props.data[this.keys[l]].subject_code)
-            }
-        }
+        this.years = ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"]
         this.state = {
+            update_data_page: false,
             year: this.current_year,
-            sort_by: {
+            new_sort: null,
+            sort: {
                 name: 0,
                 date: 0,
 
             },
             show_only: {},
             offcanvas: {},
+            data: [],
+            any_new_data: false,
+            new_data: {},
+            old_data: {}
         }
+        this.ws = this.props.ws
     }
-    sortTasks = (renderType, data, sort_object, show_object) => {
-        let tasks = {
-            submission_status_totals: {
-                overdue: 0,
-                pending: 0,
-                late: 0,
-                on_time: 0,
-            },
-            data: []
-        }
-        if (renderType === "overdue") {
-            tasks.data = data.filter(i => {
-                return i.submission_status === "Overdue" && i.year === this.current_year 
-            })
-            return tasks
-        }
-        if (this.state.year === "all_years") {
-            for (var i = 0; i < data.length; i++) {
-                switch (data[i].submission_status) {
-                    case "Overdue":
-                        tasks.submission_status_totals.overdue++
-                        break;
-                    case "Pending":
-                        tasks.submission_status_totals.pending++
-                        break;
-                    case "Recieved late":
-                        tasks.submission_status_totals.late++
-                        break;
-                    case "On time":
-                        tasks.submission_status_totals.on_time++
-                        break;
-                    default:
-                        break;
-                }
-            }
-            
-        } else {
-            for (i = 0; i < data.length; i++) {
-                console.log(data[i].year)
-                if (data[i].year === this.state.year) {
-                    switch (data[i].submission_status) {
-                        case "Overdue":
-                            tasks.submission_status_totals.overdue++
-                            break;
-                        case "Pending":
-                            tasks.submission_status_totals.pending++
-                            break;
-                        case "Recieved late":
-                            tasks.submission_status_totals.late++
-                            break;
-                        case "On time":
-                            tasks.submission_status_totals.on_time++
-                            break;
-                        default:
-                            break;
-                    }
-                }  
-            }
-            
-        }
-        tasks.data = data
-        return tasks
+    handleDataPage = (value) => {
+        this.setState({update_data_page: value})
+    }
+    handleLearningTasks = (value) => {
+        this.setState({new_data: {...value}})
+    }
+    convertData = (new_data, old_data ) => {
+        let d;
+        let x = [];
+        let data = {...old_data, ...new_data}
+        d = Object.keys(data);
+        d.forEach(element => {
+            x.push(data[element])
+        })
+        this.setState({
+            new_data: {},
+            old_data: data,
+            data: x
+        })
     }
     renderTasks = (data, renderType) => {
-        let tasks = this.sortTasks(renderType, data, this.state.sort_by, this.state.show_only)
+        let tasks;
         return (
-            <>
-                {renderType === "overdue" 
-                    ?   null 
-                    :   <>
-                            <Container>
-                                {`You currently have ${tasks.submission_status_totals.overdue} overdue learning tasks`}
-                                <br/>
-                                {`You currently have ${tasks.submission_status_totals.late} late learning tasks`}
-                                <br/>
-                                {`You currently have ${tasks.submission_status_totals.pending} pending learning tasks`}
-                                <br/>
-                                {`You currently have ${tasks.submission_status_totals.on_time} on time learning tasks`}
-                                <br/>
-                            </Container>
-                        </> 
-                }
+            <React.Fragment>
                 {tasks.data.length <= 0 
                 ? "No tasks" 
-                :   <>
+                :   <React.Fragment>
                         <ListGroup variant="flush" className="scrollarea">
                             {tasks.data.map((task, index) => (
                                 <Stack gap={6} key={index}>
@@ -169,17 +128,17 @@ export default class LearningTasks extends React.Component {
                                     <br/>
                                     <br/>
                                     {task.description !== null 
-                                        ?   <>
+                                        ?   <React.Fragment>
                                                 Description: {Parse(task.description)}
                                                 <br/>
-                                            </> 
+                                            </React.Fragment> 
                                         :   <br/>
                                     }
                                     Attachments: {task.attachments === null 
-                                        ?   <>
+                                        ?   <React.Fragment>
                                                 None
                                                 <br/>
-                                            </> 
+                                            </React.Fragment> 
                                         :   task.attachments.map((attachment, index) => 
                                                 <div key={index}>
                                                     <a href={attachment.link}>{attachment.name}</a>
@@ -197,17 +156,31 @@ export default class LearningTasks extends React.Component {
                                 </Offcanvas.Body>
                             </Offcanvas>
                 )}
-                    </>
+                    </React.Fragment>
                 }
-                
-            </>
+            </React.Fragment>
         )
     }
     render() {
+        //if (this.state.new_data !== {}) {
+        //    this.convertData(this.state.new_data, this.state.old_data)
+        //}
+        //if (this.state.new_sort !== null) {
+        //    this.sortData(this.state.data)
+        //}
+        let data = this.state.data 
         return (
-            <>
-                {this.renderTasks(this.data, this.renderType)}
-            </>
+            <React.Fragment>
+                {this.props.renderType === "overdue"
+                ?   null 
+                :   <React.Fragment>
+                        <UpdateDataPage ws={this.ws} setDataPage={this.handleDataPage} setLearningTasks={this.handleLearningTasks} state={this.state.update_data_page} type="learningtasks" />
+                        <Button type="button" onClick={() => this.setState({update_data_page: true})}></Button>
+                        <RenderLearningTasksAmount overdue={this.status_amounts.overdue} on_time={this.status_amounts.on_time} late={this.status_amounts.late} pending={this.status_amounts.pending} />
+                    </React.Fragment>
+                }
+                help
+            </React.Fragment>
         )
     }
 }

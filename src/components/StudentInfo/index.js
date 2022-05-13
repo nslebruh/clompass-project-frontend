@@ -1,0 +1,1 @@
+export {default as StudentInfo} from "./student_info.js"
