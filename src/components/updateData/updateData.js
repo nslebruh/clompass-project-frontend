@@ -28,7 +28,7 @@ export class UpdateDataPage extends React.Component {
         this.setLearningTasks = this.props.setLearningTasks || null
         this.years = ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"]
     }
-    async componentDidMount() {
+    componentDidMount() {
         this.ws.on("data", (status_code, timestamp, message, response_type, data) => {
             console.log(status_code, timestamp, message, response_type)
             console.log(data)
@@ -50,6 +50,11 @@ export class UpdateDataPage extends React.Component {
             console.log(status_code, timestamp, message, error)
             this.setState({error: error, fetching: false})
         })
+    }
+    componentWillUnmount() {
+        this.ws.off("message")
+        this.ws.off("error")
+        this.ws.off("data")
     }
     sendEmit = (type, username, password, year, month) => {
         this.setState({fetching: true, messages: [], error: null})

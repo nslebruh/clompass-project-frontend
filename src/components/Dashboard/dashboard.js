@@ -13,7 +13,6 @@ const Dashboard = (props) => {
               <Col className="text-center">
                 <h1>Overdue learning tasks</h1> 
                 <LearningTasks renderType="overdue" ws={props.ws}/>
-                {/**/}
               </Col>
               <Col className="text-center">
                 <h1>My Tasks</h1>

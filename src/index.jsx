@@ -29,7 +29,7 @@ export default class App extends React.Component {
         //this.ws = io("http://localhost:3001/get", {transports: ["websocket"]}) // connect to development server 
         
     }
-    async componentDidMount() {
+    componentDidMount() {
         console.log("component mounted")
         this.ws = this.ws.connect()
         this.ws.on("connect", () => {
