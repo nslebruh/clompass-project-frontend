@@ -6,11 +6,11 @@ const Dashboard = (props) => {
     return (
         <>
             <Row>
-            <Col className="text-center">
+            <Col xs={4} className="text-center">
                 <h1>Today's Schedule</h1>
                 <Schedule onlyDayView="true" ws={props.ws}/>
               </Col>
-              <Col className="text-center">
+              <Col xs={5} className="text-center">
                 <h1>Overdue learning tasks</h1> 
                 <LearningTasks renderType="overdue" ws={props.ws}/>
               </Col>

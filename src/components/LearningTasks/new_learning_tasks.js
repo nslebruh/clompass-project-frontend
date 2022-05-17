@@ -54,9 +54,11 @@ const ClompassLearningTask = (props) => {
             <Stack gap={6}>
                 <ListGroup.Item as="button" action onClick={() => handleOffcanvas(task.id)}>
                     <div className="d-flex w-100 align-items-center justify-content-between">
-                        <strong className="mb-1">
-                            {task.name}
-                          </strong>
+                        <strong className={`mb-1 ${props.renderType === "overdue" ? "container d-flex align-items-center justify-content-center" : ""}`}>
+                            <div>
+                                {task.name}
+                            </div>     
+                        </strong>
                         {renderType === "overdue"
                         ?   null
                         :   <small>
