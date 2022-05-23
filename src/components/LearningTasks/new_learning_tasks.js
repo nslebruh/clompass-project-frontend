@@ -8,6 +8,9 @@ import {
     nameSort,
     dateSort,
     saveLocalStorageData,
+    showOnlySubject,
+    showOnlyStatus,
+    showOnlyYear,
 } from '../../functions';
 const RenderLearningTasksAmount = (props) => {
     let {overdue, late, pending, on_time} = props.status_amounts; 
@@ -28,7 +31,7 @@ const RenderLearningTasksAmount = (props) => {
 }
 const SortMenu = (props) => {
     let updateSort = props.updateSort;
-    let classes = props.classes
+    let subjects = props.subjects
     let statuses = props.statuses
     return (
         <React.Fragment>
@@ -36,9 +39,17 @@ const SortMenu = (props) => {
                 <Dropdown.Item onClick={() => updateSort('name')}>Name</Dropdown.Item>
                 <Dropdown.Item onClick={() => updateSort('date')}>Date</Dropdown.Item>
             </DropdownButton>
-            <br/>
-            <DropdownButton id="dropdown-basic-button" title="Filter by">
-
+            Filter by: 
+            <DropdownButton id="dropdown-basic-button" title="Subjects">
+                {subjects.map((subject, index) => (
+                    <Dropdown.Item as={Button} onClick={() => updateSort(subject, "subject")} key={index}>{subject}</Dropdown.Item>
+                ))
+                }
+            </DropdownButton>
+            <DropdownButton id="dropdown-basic-button" title="Status">
+                {statuses.map((status, index) => (
+                    <Dropdown.Item onClick={() => updateSort(status, "status")} key={index}>{status}</Dropdown.Item>
+                ))}
             </DropdownButton>
         </React.Fragment>
     )
@@ -148,29 +159,30 @@ export default class LearningTasks extends React.Component {
             late: 0,
             pending: 0
         }
+        validateLocalStorageData()
         this.learning_tasks = getLocalStorageData("learning_tasks")
         let x = this.convertData({}, this.learning_tasks)
         console.log(x)
-        let y;
+        this.data = null
         this.renderType = this.props.renderType;
         console.log(this.renderType)
         if (this.renderType === "overdue") {
-            y = x.filter((element) => {
+            this.data = x.filter((element) => {
                 return element.submission_status === "Overdue"
             })
         } else {
-            y = x
+            this.data = x
         }
-        console.log(y)
         this.learning_tasks_length = Object.keys(this.learning_tasks)
         this.subjects = []
-        if (this.learning_tasks_length !== 0) {
+        if (this.learning_tasks_length.length !== 0) {
             for (var i = 0; i < this.learning_tasks_length.length; i++) {
-                if (this.subjects.includes(this.learning_tasks[this.learning_tasks_length[i]].subject)) {
-                    this.subjects.push(this.learning_tasks[this.learning_tasks_length[i]].subject)
+                if (this.subjects.includes(this.learning_tasks[this.learning_tasks_length[i]].subject_code) === false) {
+                    this.subjects.push(this.learning_tasks[this.learning_tasks_length[i]].subject_code)
                 }
             }
         }
+        console.log(this.subjects)
         this.statuses = ["Pending", "On time", "Recieved late", "Overdue"]
         //this.task_types = ["cat ", "pt", "hw", "sac"]
         this.current_year = new Date().toLocaleDateString("en-AU", {year: 'numeric'})
@@ -183,15 +195,13 @@ export default class LearningTasks extends React.Component {
             sort: {
                 name: 0,
                 date: 0,
-            },
-            sort_changed: false,
-            show_only: {
-                subject: false,
-                status: false,
+                show: {
+                    type: null,
+                    value: null,
+                }
             },
             offcanvas: {},
-            data: x,
-            sorted_data: y,
+            sorted_data: this.data,
             new_data: {},
             old_data: {...this.learning_tasks}
         }
@@ -224,18 +234,23 @@ export default class LearningTasks extends React.Component {
         })
         return x
     }
-    updateShowBy = () => {
-        
+    updateSort = (new_sort, type=false) => {
+        let new_new_sort;
+        let sort_x;
+        if (type === false) {
+            sort_x = this.state.sort[new_sort] === 0 ? 1 : this.state.sort[new_sort] === 1 ? 2 : 0;
+            new_new_sort = {...this.state.sort, [new_sort]: sort_x}
+        } else {
+            sort_x = this.state.sort.show.type === type && this.state.sort.show.value === new_sort ? {type: null , value: null} : {type: type, value: new_sort}
+            new_new_sort = {...this.state.sort, show: {type: sort_x.type, value: sort_x.value}}
+        }
+        this.sortData(new_new_sort, this.data)
     }
-    updateSort = (new_sort) => {
-        let sort_x = this.state.sort[new_sort] === 0 ? 1 : this.state.sort[new_sort] === 1 ? 2 : 0;
-        this.setState({new_sort: null, sort: {...this.state.sort, [new_sort]: sort_x}, sort_changed: true})
-    }
-    sortData = (sort, data) => {
+    sortData = (sort, dat) => {
+        let data = new Array(...dat)
         let keys = Object.keys(sort)
         for (var i = 0; i < keys.length; i++) {
-            var key = keys[i];
-            switch (sort[key]) {
+            switch (keys[i]) {
                 case "name":
                     data = nameSort(data, sort["name"])
                     break;
@@ -246,12 +261,24 @@ export default class LearningTasks extends React.Component {
                     break;
             }
         }
-        this.setState({sorted_data: data, sort_changed: false})
+        if (sort.show.type !== null) {
+            switch (sort.show.type) {
+                case "subject":
+                    data = showOnlySubject(data, sort.show.value)
+                    break;
+                case "status":
+                    data = showOnlyStatus(data, sort.show.value)
+                    break;
+                case "year":
+                    data = showOnlyYear(data, sort.show.value)
+                    break;
+                default:
+                    break;
+            }
+        }
+        this.setState({sorted_data: data, sort: sort,})
     }
     render() {
-        if (this.state.sort_changed !== false) {
-            this.sortData(this.state.new_sort, this.state.sort, this.state.data)
-        }
         return (
             <React.Fragment>
                 {this.props.renderType === "overdue"
@@ -259,19 +286,25 @@ export default class LearningTasks extends React.Component {
                 :   <React.Fragment>
                         <UpdateDataPage ws={this.ws} setDataPage={this.handleDataPage} setLearningTasks={this.handleLearningTasks} state={this.state.update_data_page} type="learningtasks" />
                         <Button type="button" onClick={() => this.setState({update_data_page: true})}>Update Data</Button>
+                        <SortMenu updateSort={this.updateSort} subjects={this.subjects} statuses={this.statuses} />
                         <RenderLearningTasksAmount status_amounts={this.status_amounts} />
-                        <SortMenu updateSort={this.updateSort} subjects={this.subjects} statuses={this.statuses}/>
                     </React.Fragment>
                 }
                 <React.Fragment>
-                    <ListGroup variant="flush" className="scrollarea">
-                        {this.state.sorted_data.map((task, index) => (
-                            <ClompassLearningTask task={task} key={index} handleOffcanvas={this.handleOffcanvas} renderType={this.renderType}/>
-                        ))}
-                    </ListGroup>
-                    {this.state.sorted_data.map((task, index) => (
-                        <ClompassLearningTaskOffCanvas task={task} key={index} handleOffcanvas={this.handleOffcanvas} show={this.state.offcanvas[task.id]}/>
-                    ))}
+                {this.state.sorted_data.length !== 0 
+                    ?   <React.Fragment>
+                            <ListGroup variant="flush" className="scrollarea">
+                                {this.state.sorted_data.map((task, index) => (
+                                    <ClompassLearningTask task={task} key={index} handleOffcanvas={this.handleOffcanvas} renderType={this.renderType}/>
+                                ))}
+                            </ListGroup>
+                            {this.state.sorted_data.map((task, index) => (
+                                <ClompassLearningTaskOffCanvas task={task} key={index} handleOffcanvas={this.handleOffcanvas} show={this.state.offcanvas[task.id]}/>
+                            ))}
+                        </React.Fragment>
+                    :   null
+                }
+                    
                 </React.Fragment>
             </React.Fragment>
         )

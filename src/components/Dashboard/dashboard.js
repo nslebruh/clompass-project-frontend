@@ -3,10 +3,10 @@ import {Schedule} from "../Schedule"
 import {LearningTasks} from "../LearningTasks"
 import {MyTasks} from "../MyTasks/"
 const Dashboard = (props) => {
-    return (
+    return (                      
         <>
             <Row>
-            <Col xs={4} className="text-center">
+              <Col xs={4} className="text-center">
                 <h1>Today's Schedule</h1>
                 <Schedule onlyDayView="true" ws={props.ws}/>
               </Col>

@@ -3,19 +3,17 @@ const dateSort = (data, sort) => {
     if (sort !== 0) {
         if (sort === 1) {
             x = data.sort((a, b) => {
-                return a.date > b.date ? 1 : -1;
+                return a.due_date > b.due_date ? 1 : -1;
             });
         } else {
             x = data.sort((a, b) => {
-                return a.date < b.date ? 1 : -1;
+                return a.due_date < b.due_date ? 1 : -1;
             });
         }
     } else {
         x = data
     }
     return x
-
-
 }
 
 const nameSort = (data, sort) => {
@@ -47,8 +45,12 @@ const classSort = (data, sort) => {
 
 }
 
-const showOnlyClass = (data, subjects) => {
-
+const showOnlySubject = (data, subject) => {
+    let x;
+    x = data.filter((element) => {
+        return element.subject_code === subject
+    })
+    return x
 }
 
 const showOnlyStatus = (data, status) => {
@@ -62,4 +64,4 @@ const showOnlyStatus = (data, status) => {
 const showOnlyYear = (data, year) => {
 
 }
-export {dateSort, nameSort, statusSort, typeSort, classSort, showOnlyClass, showOnlyStatus, showOnlyYear}
+export {dateSort, nameSort, statusSort, typeSort, classSort, showOnlySubject, showOnlyStatus, showOnlyYear}
