@@ -3,11 +3,11 @@ const dateSort = (data, sort) => {
     if (sort !== 0) {
         if (sort === 1) {
             x = data.sort((a, b) => {
-                return a.due_date > b.due_date ? 1 : -1;
+                return new Date(a.due_date) > new Date(b.due_date) ? 1 : -1;
             });
         } else {
             x = data.sort((a, b) => {
-                return a.due_date < b.due_date ? 1 : -1;
+                return new Date(a.due_date) < new Date(b.due_date) ? 1 : -1;
             });
         }
     } else {
