@@ -20,12 +20,14 @@ const ClompassNavbar = (props) => {
                     <LinkContainer to="/schedule">
                         <Nav.Link>Schedule</Nav.Link>
                     </LinkContainer>
-                    <LinkContainer to="/subjects">
+                    {/*
+                    <LinkContainer to="/subjects"> 
                         <Nav.Link>Subjects</Nav.Link>
                     </LinkContainer>
                     <LinkContainer to="/student">
                         <Nav.Link>Profile</Nav.Link>
                     </LinkContainer>
+                    */}
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
