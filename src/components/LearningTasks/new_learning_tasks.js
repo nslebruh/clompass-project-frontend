@@ -40,16 +40,16 @@ const SortMenu = (props) => {
                 <Dropdown.Item onClick={() => updateSort('date')}>Date</Dropdown.Item>
             </DropdownButton>
             Filter by: 
+            <DropdownButton id="dropdown-basic-button" title="Status">
+                {statuses.map((status, index) => (
+                    <Dropdown.Item onClick={() => updateSort(status, "status")} key={index}>{status}</Dropdown.Item>
+                ))}
+            </DropdownButton>
             <DropdownButton id="dropdown-basic-button" title="Subjects">
                 {subjects.map((subject, index) => (
                     <Dropdown.Item as={Button} onClick={() => updateSort(subject, "subject")} key={index}>{subject}</Dropdown.Item>
                 ))
                 }
-            </DropdownButton>
-            <DropdownButton id="dropdown-basic-button" title="Status">
-                {statuses.map((status, index) => (
-                    <Dropdown.Item onClick={() => updateSort(status, "status")} key={index}>{status}</Dropdown.Item>
-                ))}
             </DropdownButton>
         </React.Fragment>
     )
