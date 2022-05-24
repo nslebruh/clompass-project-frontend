@@ -176,12 +176,10 @@ export default class LearningTasks extends React.Component {
         this.learning_tasks_length = Object.keys(this.learning_tasks)
         this.subjects = []
         if (this.learning_tasks_length.length !== 0) {
-            for (var i = 0; i < this.learning_tasks_length.length; i++) {
-                if (this.subjects.includes(this.learning_tasks[this.learning_tasks_length[i]].subject_code) === false) {
-                    this.subjects.push(this.learning_tasks[this.learning_tasks_length[i]].subject_code)
-                }
-            }
-            this.status_amounts = this.countLearningTasksAmounts(this.learning_tasks)
+
+            let info = this.getLearningTasksInfo(this.learning_tasks)
+            this.subjects = info.subjects
+            this.status_amounts = info.amounts
         }
         console.log(this.subjects)
         this.statuses = ["Pending", "On time", "Recieved late", "Overdue"]
@@ -207,6 +205,7 @@ export default class LearningTasks extends React.Component {
                 pending: this.status_amounts.pending,
                 late: this.status_amounts.late,
             },
+            subjects: this.subjects,
             offcanvas: {},
             sorted_data: this.data,
             new_data: {},
@@ -214,27 +213,33 @@ export default class LearningTasks extends React.Component {
         }
         this.ws = this.props.ws
     }
-    countLearningTasksAmounts = (data) => {
+    getLearningTasksInfo = (data) => {
         let x = {
-            overdue: 0,
-            on_time: 0,
-            late: 0,
-            pending: 0
+            amounts: {
+                overdue: 0,
+                on_time: 0,
+                late: 0,
+                pending: 0
+            },
+            subjects: [],
         }
         let length = Object.keys(data)
         for (let i = 0; i < length.length; i++) {
+            if (x.subjects.includes(data[length[i]].subject_code) === false) {
+                x.subjects.push(data[length[i]].subject_code)
+            } 
             switch (data[length[i]].submission_status) {
                 case "On time":
-                    x.on_time++
+                    x.amounts.on_time++
                     break;
                 case "Recieved late":
-                    x.late++
+                    x.amounts.late++
                     break;
                 case "Pending":
-                    x.pending++
+                    x.amounts.pending++
                     break;
                 case "Overdue":
-                    x.overdue++
+                    x.amounts.overdue++
                     break;
                 default:
                     break;
@@ -248,9 +253,9 @@ export default class LearningTasks extends React.Component {
     handleLearningTasks = (value) => {
         let x = this.convertData({...value}, this.state.old_data)
         console.log(x)
-        let amounts = this.countLearningTasksAmounts(x)
+        let info = this.getLearningTasksInfo(x)
         saveLocalStorageData({learning_tasks: {...value, ...this.state.old_data}})
-        this.setState({new_data: {...value}, data: x, sorted_data: x, status_amounts: amounts})
+        this.setState({new_data: {...value}, data: x, sorted_data: x, status_amounts: info.amounts, subjects: info.subjects})
     }
     handleOffcanvas = (id, value=true) => {
         if (value === true) {
@@ -317,31 +322,30 @@ export default class LearningTasks extends React.Component {
     render() {
         return (
             <React.Fragment>
-                {this.props.renderType === "overdue"
-                ?   null 
-                :   <React.Fragment>
-                        <UpdateDataPage ws={this.ws} setDataPage={this.handleDataPage} setLearningTasks={this.handleLearningTasks} state={this.state.update_data_page} type="learning_tasks" />
-                        <Button type="button" onClick={() => this.setState({update_data_page: true})}>Update Data</Button>
-                        <SortMenu updateSort={this.updateSort} subjects={this.subjects} statuses={this.statuses} />
-                        <RenderLearningTasksAmount status_amounts={this.state.status_amounts} />
-                    </React.Fragment>
-                }
-                <React.Fragment>
-                {this.state.sorted_data.length !== 0 
+                {this.props.renderType !== "overdue"
                     ?   <React.Fragment>
-                            <ListGroup variant="flush" className="scrollarea">
-                                {this.state.sorted_data.map((task, index) => (
-                                    <ClompassLearningTask task={task} key={index} handleOffcanvas={this.handleOffcanvas} renderType={this.renderType}/>
-                                ))}
-                            </ListGroup>
-                            {this.state.sorted_data.map((task, index) => (
-                                <ClompassLearningTaskOffCanvas task={task} key={index} handleOffcanvas={this.handleOffcanvas} show={this.state.offcanvas[task.id]}/>
-                            ))}
+                            <UpdateDataPage ws={this.ws} setDataPage={this.handleDataPage} setLearningTasks={this.handleLearningTasks} state={this.state.update_data_page} type="learning_tasks" />   
+                            <Button type="button" onClick={() => this.setState({update_data_page: true})}>Update Data</Button>
                         </React.Fragment>
-                    :   null
+                    : null   
                 }
-                    
-                </React.Fragment>
+                {this.state.sorted_data.length !== 0
+                    ?   this.props.renderType !== "overdue"
+                        ?   <React.Fragment>
+                                <SortMenu updateSort={this.updateSort} subjects={this.subjects} statuses={this.statuses} />
+                                <RenderLearningTasksAmount status_amounts={this.state.status_amounts} />
+                            </React.Fragment>
+                        :   null
+                    : <h2>You have no learning tasks</h2>
+                }
+                <ListGroup variant="flush" className="scrollarea">
+                    {this.state.sorted_data.map((task, index) => (
+                        <ClompassLearningTask task={task} key={index} handleOffcanvas={this.handleOffcanvas} renderType={this.renderType}/>
+                    ))}
+                </ListGroup>
+                {this.state.sorted_data.map((task, index) => (
+                    <ClompassLearningTaskOffCanvas task={task} key={index} handleOffcanvas={this.handleOffcanvas} show={this.state.offcanvas[task.id]}/>
+                ))}
             </React.Fragment>
         )
     }
