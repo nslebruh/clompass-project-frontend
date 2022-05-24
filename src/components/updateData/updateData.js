@@ -5,7 +5,7 @@ import {
     Form,
     Spinner,
 } from "react-bootstrap"
-import { saveLocalStorageData } from '../../functions';
+import { clearLocalStorageData, saveLocalStorageData } from '../../functions';
 
 export class UpdateDataPage extends React.Component {
     constructor(props) {
@@ -68,7 +68,7 @@ export class UpdateDataPage extends React.Component {
                         <Offcanvas.Title>Update Data</Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                        <Button type="button" onClick={() => saveLocalStorageData()}>
+                        <Button type="button" onClick={() => clearLocalStorageData(this.type)}>
                             Reset local storage
                         </Button>
                         <Form>
@@ -90,7 +90,7 @@ export class UpdateDataPage extends React.Component {
                                         </React.Fragment>
                                     )
                             }
-                            {this.type !== "learningtasks" 
+                            {this.type !== "learning_tasks" 
                                 ?   null
                                 :   (
                                         <React.Fragment>

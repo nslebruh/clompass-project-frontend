@@ -153,13 +153,13 @@ const ClompassLearningTaskOffCanvas = (props) => {
 export default class LearningTasks extends React.Component {
     constructor(props) {
         super(props);
+        validateLocalStorageData()
         this.status_amounts = {
             overdue: 0,
             on_time: 0,
             late: 0,
             pending: 0
         }
-        validateLocalStorageData()
         this.learning_tasks = getLocalStorageData("learning_tasks")
         let x = this.convertData({}, this.learning_tasks)
         console.log(x)
@@ -181,6 +181,7 @@ export default class LearningTasks extends React.Component {
                     this.subjects.push(this.learning_tasks[this.learning_tasks_length[i]].subject_code)
                 }
             }
+            this.status_amounts = this.countLearningTasksAmounts(this.learning_tasks)
         }
         console.log(this.subjects)
         this.statuses = ["Pending", "On time", "Recieved late", "Overdue"]
@@ -200,6 +201,12 @@ export default class LearningTasks extends React.Component {
                     value: null,
                 }
             },
+            status_amounts: {
+                overdue: this.status_amounts.overdue,
+                on_time: this.status_amounts.on_time,
+                pending: this.status_amounts.pending,
+                late: this.status_amounts.late,
+            },
             offcanvas: {},
             sorted_data: this.data,
             new_data: {},
@@ -207,14 +214,43 @@ export default class LearningTasks extends React.Component {
         }
         this.ws = this.props.ws
     }
+    countLearningTasksAmounts = (data) => {
+        let x = {
+            overdue: 0,
+            on_time: 0,
+            late: 0,
+            pending: 0
+        }
+        let length = Object.keys(data)
+        for (let i = 0; i < length.length; i++) {
+            switch (data[length[i]].submission_status) {
+                case "On time":
+                    x.on_time++
+                    break;
+                case "Recieved late":
+                    x.late++
+                    break;
+                case "Pending":
+                    x.pending++
+                    break;
+                case "Overdue":
+                    x.overdue++
+                    break;
+                default:
+                    break;
+            }
+        }
+        return x
+    }
     handleDataPage = (value) => {
         this.setState({update_data_page: value})
     }
     handleLearningTasks = (value) => {
         let x = this.convertData({...value}, this.state.old_data)
         console.log(x)
+        let amounts = this.countLearningTasksAmounts(x)
         saveLocalStorageData({learning_tasks: {...value, ...this.state.old_data}})
-        this.setState({new_data: {...value}, data: x, sorted_data: x})
+        this.setState({new_data: {...value}, data: x, sorted_data: x, status_amounts: amounts})
     }
     handleOffcanvas = (id, value=true) => {
         if (value === true) {
@@ -284,10 +320,10 @@ export default class LearningTasks extends React.Component {
                 {this.props.renderType === "overdue"
                 ?   null 
                 :   <React.Fragment>
-                        <UpdateDataPage ws={this.ws} setDataPage={this.handleDataPage} setLearningTasks={this.handleLearningTasks} state={this.state.update_data_page} type="learningtasks" />
+                        <UpdateDataPage ws={this.ws} setDataPage={this.handleDataPage} setLearningTasks={this.handleLearningTasks} state={this.state.update_data_page} type="learning_tasks" />
                         <Button type="button" onClick={() => this.setState({update_data_page: true})}>Update Data</Button>
                         <SortMenu updateSort={this.updateSort} subjects={this.subjects} statuses={this.statuses} />
-                        <RenderLearningTasksAmount status_amounts={this.status_amounts} />
+                        <RenderLearningTasksAmount status_amounts={this.state.status_amounts} />
                     </React.Fragment>
                 }
                 <React.Fragment>

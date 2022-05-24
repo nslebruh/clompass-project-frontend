@@ -73,5 +73,31 @@ const saveLocalStorageData = (d = null) => {
     console.log(data)
     localStorage.setItem('clompass-data', JSON.stringify(data))
 }
+const clearLocalStorageData = (key=null) => {
+    let data;
+    if (key === null) {
+        data = {
+                timestamp: new Date().valueOf(),
+                schedule_url: "",
+                schedule_data: {},
+                learning_tasks: {},
+                subjects: {},
+                student_info: {
+                    chronicles: {}
+                },
+            }
+    } else {
+        data = getLocalStorageData()
+        if (key === "schedule_url") {
+            data[key] = ""
+        } else if (key === "student_info") {
+            data[key] = {chronicles: {}}
+        } else {
+            data[key] = {}
+        }
+    }
+    console.log(data)
+    localStorage.setItem('clompass-data', JSON.stringify(data))
+}
 
-export {getLocalStorageData, validateLocalStorageData, saveLocalStorageData};
+export {getLocalStorageData, validateLocalStorageData, saveLocalStorageData, clearLocalStorageData};
