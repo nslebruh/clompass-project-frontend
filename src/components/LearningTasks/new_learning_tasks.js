@@ -329,7 +329,7 @@ export default class LearningTasks extends React.Component {
                         </React.Fragment>
                     : null   
                 }
-                {this.state.sorted_data.length !== 0
+                {this.data.length !== 0
                     ?   this.props.renderType !== "overdue"
                         ?   <React.Fragment>
                                 <SortMenu updateSort={this.updateSort} subjects={this.subjects} statuses={this.statuses} />
