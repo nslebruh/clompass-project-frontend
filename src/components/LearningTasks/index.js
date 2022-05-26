@@ -1,1 +1,1 @@
-export {default as LearningTasks} from "./new_learning_tasks.js"
+export {default as LearningTasks} from "./LearningTasks.js"

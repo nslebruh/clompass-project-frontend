@@ -166,9 +166,9 @@ export default class LearningTasks extends React.Component {
         this.data = null
         this.renderType = this.props.renderType;
         console.log(this.renderType)
-        if (this.renderType === "overdue") {
+        if (this.renderType) {
             this.data = x.filter((element) => {
-                return element.submission_status === "Overdue"
+                return element.submission_status === this.renderType
             })
         } else {
             this.data = x
