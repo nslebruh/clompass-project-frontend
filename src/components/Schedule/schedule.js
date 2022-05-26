@@ -9,7 +9,7 @@ import {
 import Scheduler, { Resource } from 'devextreme-react/scheduler';
 import { Button } from 'react-bootstrap';
 import { UpdateDataPage } from '../updateData';
-import "./new_schedule.scss"
+import "./schedule.scss"
 const colours = [
     {
         id: 0,
