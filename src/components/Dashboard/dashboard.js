@@ -1,7 +1,6 @@
 import {Row, Col} from "react-bootstrap"
 import {Schedule} from "../Schedule"
 import {LearningTasks} from "../LearningTasks"
-import {MyTasks} from "../MyTasks/"
 const Dashboard = (props) => {
     return (                      
         <>
@@ -15,8 +14,15 @@ const Dashboard = (props) => {
                 <LearningTasks renderType="overdue" ws={props.ws}/>
               </Col>
               <Col className="text-center">
-                <h1>My Tasks</h1>
-                <MyTasks />
+                <h1>Disclaimer:</h1>
+                  <p>
+                    This is a prototype for a learning management system.
+                    It is not intended to be a full-featured learning management system.
+                    This is still in development and may be subject to change. 
+                    Any data submitted is not collected or stored. 
+                    The source code is linked below:
+                    <br/>
+                  </p>
               </Col>
             </Row>
 
