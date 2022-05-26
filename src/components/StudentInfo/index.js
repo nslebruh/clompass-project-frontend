@@ -1,1 +1,1 @@
-export {default as StudentInfo} from "./student_info.js"
+export {default as StudentInfo} from "./StudentInfo.js"
