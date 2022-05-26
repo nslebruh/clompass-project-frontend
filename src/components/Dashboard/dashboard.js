@@ -29,7 +29,6 @@ const Dashboard = (props) => {
                   </p>
               </Col>
             </Row>
-
     </>
     )
 }
