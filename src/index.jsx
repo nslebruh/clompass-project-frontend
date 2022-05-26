@@ -50,13 +50,13 @@ export default class App extends React.Component {
                         <Route path="/" element={<Dashboard ws={this.ws}/>} />
                         <Route path="/schedule" element={<Schedule ws={this.ws}/>} />
                         <Route path="/learning-tasks" element={<LearningTasks ws={this.ws} />} /> 
+                        <Route path="*" element={<PageNotFound />} />
                     {/*
                         <Route path="/student" element={<StudentInfo ws={this.ws}/>} />
                         <Route path="/subjects" element={<Subjects ws={this.ws}/>}/>
                         <Route path="/subject/:subjectCode" element={<Subject ws={this.ws}/>} />
                         <Route path="/error" element={<ErrorPage />} />
                         <Route path="/settings" element={<Settings setState={this.handleSingleStateChange}/>} />
-                        <Route path="*" element={<PageNotFound />} />
                     */}
                 </Routes>
             </Router>

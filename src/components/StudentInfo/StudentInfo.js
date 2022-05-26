@@ -10,10 +10,11 @@ export default class StudentInfo extends React.Component {
     render() {
         return (
             <Container>
+                <h1>Profile</h1>
                 {this.props.data === [] ? <>No student info</> : 
                 <Row>
                 <Col>
-                    <h1>Profile</h1>
+                    
                     Name: {this.props.data.name}
                     <br/>
                     Prefered name: {this.props.data.prefered_name}

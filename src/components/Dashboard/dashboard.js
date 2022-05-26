@@ -18,8 +18,10 @@ const Dashboard = (props) => {
                   <p>
                     This is a prototype for a learning management system.
                     It is not intended to be a full-featured learning management system.
+
                     This is still in development and may be subject to change. 
                     Any data submitted is not collected or stored. 
+                    
                     The source code is linked below:
                     <br/>
                     <a href="https://github.com/nslebruh/clompass-project-frontend" target="_blank" rel="noreferrer">Frontend Website</a>
