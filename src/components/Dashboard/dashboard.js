@@ -22,9 +22,9 @@ const Dashboard = (props) => {
                     Any data submitted is not collected or stored. 
                     The source code is linked below:
                     <br/>
-                    <a href="https://github.com/nslebruh/clompass-project-backend">Backend Server</a>
+                    <a href="https://github.com/nslebruh/clompass-project-backend" target="_blank" rel="noreferrer">Backend Server</a>
                     <br/>
-                    <a href="https://github.com/nslebruh/clompass-project-frontend">Frontend Website</a>
+                    <a href="https://github.com/nslebruh/clompass-project-frontend" target="_blank" rel="noreferrer">Frontend Website</a>
                     <br/>
                   </p>
               </Col>
