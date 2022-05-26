@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap"
 
-import Chronicles from "./chronicles";
+import Chronicles from "./Chronicles";
 export default class StudentInfo extends React.Component {
     constructor(props) {
         super(props);

@@ -1,1 +1,1 @@
-export {default as Settings} from "./settings.js"
+export {default as Settings} from "./Settings.js"

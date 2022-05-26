@@ -1,1 +1,1 @@
-export { UpdateDataPage } from "./updateData.js"
+export { UpdateDataPage } from "./UpdateData.js"
