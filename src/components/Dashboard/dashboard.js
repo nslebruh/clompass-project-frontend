@@ -21,6 +21,8 @@ const Dashboard = (props) => {
                     This is still in development and may be subject to change. 
                     Any data submitted is not collected or stored. 
                     The source code is linked below:
+                    <a href="https://github.com/nslebruh/clompass-project-backend">Backend Server</a>
+                    <a href="https://github.com/nslebruh/clompass-project-frontend">Frontend Website</a>
                     <br/>
                   </p>
               </Col>
