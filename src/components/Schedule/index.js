@@ -1,1 +1,1 @@
-export {default as Schedule} from "./Schedule.js"
+export {default as Schedule} from "./schedule.js"
